@@ -11,7 +11,7 @@
 
 ### 老思路
 
-在AI编程空间开启无线调试，用电脑连接平板，使用ADB安装Shizuku和MT管理器，通过MT管理器实现绕过软件包管理器的安装拦截
+在AI编程空间开启无线调试，安装Shizuku和MT管理器，通过MT管理器安装第三方应用
 
 ### 新思路
 
@@ -19,7 +19,7 @@
 
 最近讯飞官方放开限制，部分第三方应用可通过“讯飞AI学”远程安装。所以安装元萝卜，在元萝卜里安装“终端模拟器”，在终端模拟器执行setprop命令打开无线调试；
 
-官方更新了“学习机MDM”，拦截无线调试安装应用的行为，通过无线调试卸载更新即可解开限制。
+官方更新了“学习机MDM”，拦截pm命令安装应用，卸载学习机MDM即可解开限制。
 
 ## 适用范围
 
@@ -39,11 +39,11 @@
 
 使用系统分享功能（文件管理器长按文件，选择分享），将元萝卜.apk分享给讯飞AI学，根据提示安装
 
-![](/pic/1.png)
+![](pic/1.png)
 
 将终端模拟器.apk用U盘或其他东西（QQ微信之类）复制到平板，打开方式为元萝卜，在元萝卜里安装终端模拟器.apk
 
-![](/pic/2.png)
+![](pic/2.png)
 
 ### 开启无线调试
 
@@ -66,7 +66,7 @@ setprop ctl.restart adbd
 
 > 注意：校园网之类的好像不能使用无线调试。遇到10060错误时，请尝试手机热点。
 
-![](/pic/3.png)
+![](pic/3.png)
 
 4.输入adb connect <IP地址>，看到connected to 192.168.1.152:5555类似的就是成功了，如果出现ADB被占用，请退出360和2345等乱七八糟的软件，并运行ADB工具箱里的ADB占用清除工具
 
@@ -75,8 +75,9 @@ setprop ctl.restart adbd
 1.电脑输入adb shell，并执行以下命令
 
 ```
-pm uninstall com.iflytek.ebg.aistudy.mdm //卸载学习机MDM的更新，注意不能卸载应用本身，所以只能执行一次
-pm uninstall com.iflytek.appshop //卸载应用中心，防止自动更新导致MDM卸载更新失效
+pm uninstall com.iflytek.ebg.aistudy.mdm //卸载学习机MDM的更新
+pm uninstall com.iflytek.ebg.aistudy.mdm //第一次是卸载更新，第二次是卸载应用
+pm uninstall com.iflytek.appshop //卸载应用中心，防止官方骚操作
 pm uninstall com.iflytek.appshop //第一次是卸载更新，第二次是卸载应用
 pm uninstall com.sprd.systemupdate //卸载系统升级
 pm uninstall com.sprd.systemupdate //第一次是卸载更新，第二次是卸载应用
@@ -91,9 +92,9 @@ pm uninstall com.iflytek.ebg.aistudy.netguard //第一次是卸载更新，第�
 pm uninstall com.iflytek.cleanmaster //卸载安全助手
 pm uninstall com.iflytek.cleanmaster //第一次是卸载更新，第二次是卸载应用
 ```
-### 让NP管理器接管系统软件包安装程序
+### 让MT管理器接管系统软件包安装程序
 
-1.在上一步连接成功后，输入以下内容来安装链接里的shizuku，NP管理器
+1.在上一步连接成功后，输入以下内容来安装链接里的shizuku，MT管理器
 
 ```
 adb install <apk文件路径> 
@@ -111,7 +112,7 @@ Success
 
 3.打开Shizuku，点击通过无线调试启动，如果成功了，会自动返回主页显示shizuku正在运行
 
-4.打开NP管理器，安装via.apk，看能不能成功
+4.打开MT管理器，安装via.apk，看能不能成功
 
 ### 重启后怎么做
 
@@ -121,18 +122,17 @@ Success
 setprop service.adb.tcp.port 5555
 setprop ctl.restart adbd
 ```
-2.重启后运行你保存的脚本，再去激活Shizuku，然后就可以在NP管理器自由安装应用了
+2.重启后运行你保存的脚本，再去激活Shizuku，然后就可以在MT管理器自由安装应用了
 
-> 推荐用NP管理器保存到/sdcard/aaa/adbon.sh
+> 推荐保存到/sdcard/aaa/adbon.sh
 
-![](/pic/4.jpg)
+![](pic/4.jpg)
 
 ## 系统优化
 
 ### 第三方桌面
 
 安装Lawnchair，在多任务页面长按Lawnchair的图标，点击右边的圆圈内感叹号图标，将其设置为默认主屏幕应用
-![desktop](/pic/desktop.png)
 
 ### 第三方输入法
 
@@ -148,16 +148,20 @@ setprop ctl.restart adbd
 
 推荐豌豆荚
 
+### 开机加速
+
+把学习应用全给卸载了，实测第二屏秒开
+
+> 不要卸载个人中心，会卡解锁界面！
+
 ## 碎碎念
 
 ### 一些细节
 
 * 千万别手欠点系统更新，我就是从1.00.8升级到1.02.2时卡第二屏，不得不恢复出厂
-* NP管理器是MT管理器的替身，讯飞已经屏蔽MT管理器包名
-* 包名带game的应用无法安装，比如农药
 * 个人中心千万不要卸载，不然会卡解锁界面
-* 虽然新版系统限制多，但是修复了蓝牙断音WIFI断流等一大堆bug，还开了加密
-* 个人认为可以升级到1.02.2，但也只能到这个版本了，再往上估计就真的破解不了了，除非root
+* 虽然新版系统限制多，但是修复了蓝牙断音WIFI断流等一大堆bug，还开了加密，能设置密码锁屏
+* 总之就是看你敢不敢升
 
 ### 学习
 
@@ -173,7 +177,7 @@ setprop ctl.restart adbd
 
 讲个搞笑的，硕士研究生的就业率比本科生还低一个百分点。
 
-* 计算机可以本科就业，能报么？
+* 计算机能报么？
 
 现在是2025年9月26日。
 
